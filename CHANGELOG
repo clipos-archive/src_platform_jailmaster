@@ -1,0 +1,131 @@
+# ChangeLog for <app-clip>/<jailmaster>
+
+  11 Sep 2014; Yves-Alexis Perez <clipos@ssi.gouv.fr>
+  jailmaster-1.2.0.ebuild:
+  Add amd64 keyword, masked for now.
+
+*jailmaster-1.2.0 (12 Dec 2013)
+
+  12 Dec 2013; Vincent Strubel <clipos@ssi.gouv.fr>
+  +jailmaster-1.2.0.ebuild, -jailmaster-1.1.1.ebuild:
+  Run an inotify update monitor in /update.
+  Properly initialize extra groups in the user service.
+
+  17 Apr 2009; Vincent Strubel <clipos@ssi.gouv.fr>
+  jailmaster-1.1.1.ebuild:
+  Switch to verictl2.eclass.
+
+*jailmaster-1.1.1 (18 Mar 2009)
+
+  18 Mar 2009; Vincent Strubel <clipos@ssi.gouv.fr>
+  +jailmaster-1.1.1.ebuild, -jailmaster-1.1.0.ebuild:
+  Fix compilation with FORTIFY_SOURCE.
+
+*jailmaster-1.1.0 (10 Mar 2009)
+
+  10 Mar 2009; Vincent Strubel <clipos@ssi.gouv.fr>
+  +jailmaster-1.1.0.ebuild, -jailmaster-1.0.9-r1.ebuild:
+  Remove ADMIN service.
+
+*jailmaster-1.0.9-r1 (18 Jul 2008)
+
+  18 Jul 2008; Vincent Strubel <clipos@ssi.gouv.fr>
+  +jailmaster-1.0.9-r1.ebuild, -jailmaster-1.0.9.ebuild:
+  Remove CAP_SETUID from veriexec entry.
+  Switch to ccsd veriexec hash.
+
+  07 Nov 2007; Vincent Strubel <clipos@ssi.gouv.fr>
+  Remove stale ebuilds before 1.0.9.
+
+*jailmaster-1.0.9 (23 Jul 2007)
+
+  23 Jul 2007; Vincent Strubel <clipos@ssi.gouv.fr>
+  +jailmaster-1.0.9.ebuild:
+  Start crond as the update service.
+
+*jailmaster-1.0.8 (16 Jul 2007)
+
+  16 Jul 2007; Vincent Strubel <clipos@ssi.gouv.fr>
+  +jailmaster-1.0.8.ebuild:
+  Added syslog support : jailmaster logs through the jail root's 
+  /dev/log.
+
+*jailmaster-1.0.7 (07 Jun 2007)
+
+  07 Jun 2007; Vincent Strubel <clipos@ssi.gouv.fr>
+  +jailmaster-1.0.7.ebuild:
+  Bump, adds support for LOCAL_ADDR passing so that we can tell
+  a RM jail what its local address is, rather than hardcoding it
+  the RM tree => this is needed for the local admin session. Note 
+  that we still need to provide a way to edit the /etc/hosts in 
+  RM jails, but we cannot depend on such editing for the admin login 
+  to work, because admin login will be recquired for editting :)
+
+*jailmaster-1.0.6 (05 Mar 2007)
+
+  05 Mar 2007; Vincent Strubel <clipos@ssi.gouv.fr>
+  +jailmaster-1.0.6.ebuild:
+  Cleanup compile options, do not link to lvserver in the non-static
+  case, since it is no longer needed by lclip.
+  
+*jailmaster-1.0.5-r1 (30 Jan 2006)
+
+  30 Jan 2006; Vincent Strubel <clipos@ssi.gouv.fr>
+  +jailmaster-1.0.5-r1.ebuild:
+  Add verictl support, add CAP_SYS_CHROOT + CAP_SETUID, forced 
+  for root (non inheritable) to /bin/jailmaster.
+  
+*jailmaster-1.0.5 (21 Aug 2006)
+
+  21 Aug 2006; Vincent Strubel <clipos@ssi.gouv.fr>
+  +jailmaster-1.0.5.ebuild:
+  Replace hard coded check for "rm_admin" user name with check for
+  - still hardcoded - "rm_admin" group (either gid or group set) to
+  decide whether to call USER_SESSION or ADMIN_SESSION.
+  Needs clip-lib >= 1.1.1.
+  Also add a --enable-verbose configure switch, that triggers 
+  reopening /tmp/jailmaster.{log,err} as standard output 
+  rather than /dev/null.
+  Finally, replace "/usr/sbin/sshd" with "/sbin/sshd" in admin_service,
+  as this is the current install path.
+  Ebuild changes: update dependencies, add IUSE clip-devel to 
+  reflect --enable-verbose.
+
+*jailmaster-1.0.4-r1 (07 Aug 2006)
+
+  07 Aug 2006; Vincent Strubel <clipos@ssi.gouv.fr>
+  +jailmaster-1.0.4-r1.ebuild:
+  Create symlink /sbin/init to /bin/jailmaster. rm's init is 
+  thus provided by jailmaster, which is directly started by 
+  vserver start. Stopping is done by calling vserver exec /sbin/halt.
+  See also sys-apps/busybox-rm-1.1.0-r2 's changelog for today.
+  
+*jailmaster-1.0.4 (27 Jul 2006)
+
+  27 Jul 2006; Vincent Strubel <clipos@ssi.gouv.fr>
+  +jailmaster-1.0.4.ebuild:
+  Update to /usr/local/bin PATH.
+
+*jailmaster-1.0.3 (19 apr 2006)
+
+  19 Apr 2006; Vincent Strubel <clipos@ssi.gouv.fr>
+  +jailmaster-1.0.3.ebuild:
+  Use libclip to properly daemonize jailmaster.
+
+*jailmaster-1.0.2 (04 apr 2006)
+
+  04 Apr 2006; Vincent Strubel <clipos@ssi.gouv.fr>
+  +jailmaster-1.0.2.ebuild:
+  Link with libclip to simplify code.
+
+*jailmaster-1.0.1 (03 apr 2006)
+
+  03 Apr 2006; Vincent Strubel <clipos@ssi.gouv.fr>
+  +jailmaster-1.0.1.ebuild:
+  Enable static building, both in source and ebuild.
+
+*jailmaster-1.0 (31 mar 2006)
+
+  31 mar 2006; Vincent Strubel <clipos@ssi.gouv.fr>
+  +jailmaster-1.0.ebuild:
+  Initial import.  Port from CLIP-BSD.

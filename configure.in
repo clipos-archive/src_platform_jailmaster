@@ -1,0 +1,81 @@
+dnl Process this file with autoconf to produce a configure script.
+dnl Adapted from the nice scripts from RoX
+AC_INIT(jailmaster.c)
+
+dnl Checks for programs.
+AC_PROG_CC
+
+[
+if test "x$GCC" = "xyes"; then
+  CFLAGS="$CFLAGS -Wall -Wextra -Werror \
+	-Wstrict-prototypes -Wmissing-prototypes \
+	-Wcast-qual -Wcast-align -Wpointer-arith \
+	-Wnested-externs"
+fi
+]
+
+dnl Check for static flag
+AC_ARG_ENABLE(static,   
+		AC_HELP_STRING([--enable-static], [static support]),
+			[static=$enableval], [static=no])
+AC_SUBST(static)
+dnl Check for verbose
+AC_ARG_ENABLE(syslog,   
+		AC_HELP_STRING([--enable-syslog], [syslog support]),
+			[syslog=$enableval], [syslog=no])
+AC_SUBST(syslog)
+
+if test -z "$PKG_CONFIG"; then
+  PKG_CONFIG=pkg-config
+fi
+AC_SUBST(PKG_CONFIG)
+
+AC_MSG_CHECKING(that pkg-config runs)
+if "$PKG_CONFIG" --version > /dev/null 2>&1 ; then
+  AC_MSG_RESULT(yes)
+else
+  AC_MSG_RESULT(no)
+  AC_MSG_ERROR([*** $PKG_CONFIG missing ***
+
+\'$PKG_CONFIG --version\' failed to run - make sure it is inside one of the
+directories in your PATH environment variable!
+
+pkg-config comes with the developement packages for GTK+-2.2, available at:
+
+    http://www.gtk.org])
+fi
+
+AC_DEFUN([BUILD_DEPENDS], [
+AC_MSG_CHECKING(that $3 (version >= $2) is installed)
+if "$PKG_CONFIG" --atleast-version=$2 $1 ; then
+  LDFLAGS="$LDFLAGS `$PKG_CONFIG --libs $1`"
+  CFLAGS="$CFLAGS `$PKG_CONFIG --cflags $1`"
+  AC_MSG_RESULT(yes)
+else
+  AC_MSG_RESULT(no)
+  if "$PKG_CONFIG" --exists $1 ; then
+    ERRSTR=`"$PKG_CONFIG"  --modversion $1`
+    AC_MSG_ERROR(Current version is only $ERRSTR)
+  else
+    AC_MSG_ERROR(Package is not installed)
+  fi
+fi
+])
+
+BUILD_DEPENDS(clip, 1.2.0, clip-lib)
+
+
+dnl Checks for header files.
+AC_HEADER_STDC
+AC_CHECK_HEADERS(unistd.h signal.h sys/wait.h sys/socket.h sys/un.h)
+AC_CHECK_HEADERS(clip/clip.h)
+
+dnl Checks for typedefs, structures, and compiler characteristics.
+AC_C_CONST
+AC_TYPE_UID_T
+AC_TYPE_SIZE_T
+
+dnl Checks for library functions.
+AC_CHECK_FUNCS(chroot signal setsid setuid getpwuid getsockopt)
+
+AC_OUTPUT(Makefile)

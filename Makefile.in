@@ -1,0 +1,66 @@
+SHELL = @SHELL@
+srcdir = @srcdir@
+VPATH = @srcdir@
+CC = @CC@
+CFLAGS = @CFLAGS@ -Wall -Wextra -Wcast-qual -Wstrict-prototypes -Werror -fno-common
+LDFLAGS = @LDFLAGS@ -fno-common
+PREFIX = @prefix@
+STATIC = @static@
+SYSLOG = @syslog@
+ENABLE_RM = @enablerm@
+.SUFFIXES:
+.SUFFIXES: .c .o
+
+PKG_CONFIG = @PKG_CONFIG@
+
+############ Things to change for different programs
+
+PROG = jailmaster
+SCRIPTS = update-service run-update
+
+SRCS = jailmaster.c jail.c
+
+OBJECTS = ${patsubst %.c, %.o, ${SRCS}} 
+
+ifeq (${STATIC},yes)
+CFLAGS += -DJAILMASTER_STATIC
+LDFLAGS += -static
+endif
+
+ifeq ($(SYSLOG),yes)
+CFLAGS += -DJAILMASTER_SYSLOG
+endif
+
+############ Things to keep the same
+
+%.o:%.c Makefile
+	${CC} $(CFLAGS) -c -o $@ $<
+
+${PROG}: ${OBJECTS} Makefile
+	${CC} -o ${PROG} ${OBJECTS} ${LDFLAGS}
+
+install: ${PROG} ${SCRIPTS}
+	install -D ${PROG} -m 0700 ${DESTDIR}${PREFIX}/bin/${PROG}
+	list='$(SCRIPTS)'; for exe in $$list; do \
+		install -D $$exe -m 0700 ${DESTDIR}${PREFIX}/sbin/$$exe ;\
+	done
+	
+
+clean:
+	rm -f *.o ${PROG}
+
+mrproper: clean
+	rm -f config.log Makefile config.status 
+	rm -fr autom4te.cache
+
+depend:
+	makedepend -- ${CFLAGS} -- ${SRCS}
+
+Makefile: Makefile.in config.status
+	./config.status
+
+config.status: configure
+	$(srcdir)/configure 
+
+configure: configure.in
+	cd $(srcdir) && autoconf

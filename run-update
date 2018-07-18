@@ -1,0 +1,14 @@
+#!/bin/sh
+# SPDX-License-Identifier: LGPL-2.1-or-later
+# Copyright © 2007-2018 ANSSI. All Rights Reserved.
+
+# Called by inotifyd as
+# run-update "n" "/var/pkg/mirrors/flags" "rm_apps/rm_core"
+FILE="${3}"
+
+/bin/logger -p daemon.info "run-update called with arg ${FILE}"
+
+[[ "${FILE}" == "rm_apps" ]] || exit 0
+
+/bin/ionice -c 3 -- \
+	/bin/nice -n 15 /usr/bin/clip_install -d rm -p apps

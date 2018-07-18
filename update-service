@@ -1,0 +1,11 @@
+#!/bin/sh
+# SPDX-License-Identifier: LGPL-2.1-or-later
+# Copyright © 2007-2018 ANSSI. All Rights Reserved.
+
+# Run cron for periodic update checks
+# as a fallback for inotify based checks
+/sbin/crond
+
+[[ -e /sbin/inotifyd ]] || exit 0
+
+/sbin/inotifyd /sbin/run-update /var/pkg/mirrors/flags:n &
